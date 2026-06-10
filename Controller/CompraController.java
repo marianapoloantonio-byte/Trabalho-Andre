@@ -2,10 +2,12 @@ package Controller;
 
 import Interfaces.Pagamento;
 import Model.Jogos;
+import Model.Pagamento.PagamentoBoleto;
+import Model.Pagamento.PagamentoCartao;
+import Model.Pagamento.PagamentoPix;
 import Model.Usuario;
 
 import Model.Compra;
-import Pagamento.*;
 import Service.BibliotecaService;
 import Service.LogService;
 
