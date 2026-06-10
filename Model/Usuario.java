@@ -1,9 +1,11 @@
 package Model;
 
+import Interfaces.Autenticavel;
+
 import java.util.ArrayList;
 import java.util.List;
 
-public class Usuario extends Pessoa {
+public class Usuario extends Pessoa implements Autenticavel {
     private List<Jogos> biblioteca;
 
     public Usuario(int id,String nome, String email){
@@ -16,10 +18,8 @@ public class Usuario extends Pessoa {
         System.out.println("usuario"+ nome);
     }
 
+
     // Adicionar jogo na biblioteca
-
-
-
     public void adicionarJogo(Jogos jogo) {
         biblioteca.add(jogo);
     }
@@ -29,5 +29,11 @@ public class Usuario extends Pessoa {
 
     public void setBiblioteca(List<Jogos> biblioteca) {
         this.biblioteca = biblioteca;
+    }
+
+    // --- Verifica se o email esta cadastrado
+    @Override
+    public boolean login(String email) {
+        return this.email.equalsIgnoreCase(email);
     }
 }
