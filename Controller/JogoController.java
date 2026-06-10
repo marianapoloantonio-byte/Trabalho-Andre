@@ -1,22 +1,28 @@
 package Controller;
 
 import Model.Jogos;
+import Service.LogService;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class JogoController {
-    private List<Jogos> bancoDeJogos = new ArrayList<>();
+    private static List<Jogos> bancoDeJogos = new ArrayList<>();
 
     public JogoController() {
-        // Alguns jogos iniciais para teste
-        bancoDeJogos.add(new Jogos(1, "Resident Evil 4", "Terror", 169.00));
-        bancoDeJogos.add(new Jogos(2, "Hollow Knight", "Metroidvania", 27.99));
-    }
+        //** Alguns jogos iniciais para teste
+        if (bancoDeJogos.isEmpty()) {
 
-    // CRUD para o menu do Administrador
+            bancoDeJogos.add(new Jogos(1, "Resident Evil 4", "Terror", 169.00));
+            bancoDeJogos.add(new Jogos(2, "Hollow Knight", "Metroidvania", 27.99));
+
+        }
+    }
+    //** menu do Administrador
     public void cadastrarJogo(int id, String titulo, String genero, double preco) {
         Jogos novoJogo = new Jogos(id, titulo, genero, preco);
         bancoDeJogos.add(novoJogo);
+        LogService.registrar("Jogo cadastrado: " + titulo);
         System.out.println("Jogo '" + titulo + "' cadastrado com sucesso!");
     }
 
@@ -35,6 +41,7 @@ public class JogoController {
         Jogos jogo = buscarPorId(id);
         if (jogo != null) {
             bancoDeJogos.remove(jogo);
+            LogService.registrar("Jogo removido: " + jogo.getTitulo());
             System.out.println("Jogo removido do catálogo.");
         } else {
             System.out.println("Jogo não encontrado.");
