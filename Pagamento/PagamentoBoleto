@@ -1,4 +1,4 @@
-package Pagamento;
+package Model.Pagamento;
 
 import Interfaces.Pagamento;
 
