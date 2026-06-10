@@ -3,15 +3,20 @@ package View;
 import Controller.CompraController;
 import Controller.JogoController;
 import Controller.UsuarioController;
+import Model.Avaliacao;
 import Model.Jogos;
 import Model.Usuario;
 import java.util.Scanner;
+
+
 
 public class MenuView {
     private Scanner scanner = new Scanner(System.in);
     private UsuarioController usuarioController = new UsuarioController();
     private JogoController jogoController = new JogoController();
     private CompraController compraController = new CompraController();
+    private AdministradorView administradorView = new AdministradorView();
+    private JogosView jogosView = new JogosView();
 
     public void exibirMenuPrincipal() {
         int opcao = -1;
@@ -27,7 +32,7 @@ public class MenuView {
 
             switch (opcao) {
                 case 1 -> menuUsuario();
-                case 2 -> menuAdministrador();
+                case 2 -> administradorView.exibirMenuAdministrador();
                 case 0 -> System.out.println("Saindo... ");
                 default -> System.out.println("Opção inválida!");
             }
@@ -62,6 +67,8 @@ public class MenuView {
             System.out.println("1. Ver Catálogo de Jogos");
             System.out.println("2. Comprar um Jogo");
             System.out.println("3. Visualizar Minha Biblioteca");
+            System.out.println("4. Avaliar um Jogo");
+            System.out.println("5. Ver Avaliações de um jogo");
             System.out.println("0. Voltar ao Menu Principal");
             System.out.print("Opção: ");
             opcao = scanner.nextInt();
@@ -71,60 +78,19 @@ public class MenuView {
                 case 1 -> listarCatalogo();
                 case 2 -> comprarJogo(usuarioLogado);
                 case 3 -> visualizarBiblioteca(usuarioLogado);
+                case 4 -> avaliarJogo(usuarioLogado);
+                case 5 -> visualizarAvaliacoes();
                 case 0 -> System.out.println("Deslogando usuário...");
                 default -> System.out.println("Opção inválida!");
             }
         }
     }
 
-    // --- MENU DO ADMINISTRADOR ---
-    private void menuAdministrador() {
-        int opcao = -1;
-        while (opcao != 0) {
-            System.out.println("\n🛠️ === MENU ADMINISTRADOR (CRUD JOGOS) ===");
-            System.out.println("1. Cadastrar Novo Jogo");
-            System.out.println("2. Listar Todos os Jogos");
-            System.out.println("3. Remover Jogo do Catálogo");
-            System.out.println("0. Voltar ao Menu Principal");
-            System.out.print("Opção: ");
-            opcao = scanner.nextInt();
-            scanner.nextLine();
 
-            switch (opcao) {
-                case 1 -> {
-                    System.out.print("ID do Jogo: ");
-                    int id = scanner.nextInt();
-                    scanner.nextLine();
-                    System.out.print("Título: ");
-                    String titulo = scanner.nextLine();
-                    System.out.print("Gênero: ");
-                    String genero = scanner.nextLine();
-                    System.out.print("Preço: R$ ");
-                    double preco = scanner.nextDouble();
-                    jogoController.cadastrarJogo(id, titulo, genero, preco);
-                }
-                case 2 -> listarCatalogo();
-                case 3 -> {
-                    System.out.print("Digite o ID do jogo que deseja remover: ");
-                    int idDeletar = scanner.nextInt();
-                    jogoController.deletarJogo(idDeletar);
-                }
-                case 0 -> System.out.println("Saindo do modo administrador...");
-                default -> System.out.println("Opção inválida!");
-            }
-        }
-    }
 
     // --- MÉTODOS AUXILIARES DE FLUXO ---
     private void listarCatalogo() {
-        System.out.println("\n ----------- CATÁLOGO DE JOGOS DISPONÍVEIS -----------");
-        if (jogoController.listarJogos().isEmpty()) {
-            System.out.println("Nenhum jogo cadastrado no momento.");
-        } else {
-            for (Jogos j : jogoController.listarJogos()) {
-                System.out.println("ID: " + j.getId() + " | " + j.getTitulo() + " [" + j.getGenero() + "] - R$ " + j.getPreco());
-            }
-        }
+        jogosView.exibirCatalogo(jogoController.listarJogos());
     }
 
     private void comprarJogo(Usuario usuario) {
@@ -158,4 +124,103 @@ public class MenuView {
             }
         }
     }
+
+    // --
+
+    // ============= METODOS PARA AVALIACOES ===================
+    private void avaliarJogo(Usuario usuario) {
+
+        // -- Exibe mensagem se nao tiver jogo na biblioteca para avaliar
+        if(usuario.getBiblioteca().isEmpty()) {
+            System.out.println("❌ Você não possui jogos para avaliar.");
+            return;
+        }
+
+        System.out.println("\n🎮 SEUS JOGOS:");
+
+        for(Jogos j : usuario.getBiblioteca()) {
+            System.out.println("ID: " + j.getId() + " | " + j.getTitulo());
+        }
+
+        System.out.print("\nDigite o ID do jogo: ");
+        int id = scanner.nextInt();
+        scanner.nextLine();
+
+        Jogos jogoEscolhido = null;
+
+        for(Jogos j : usuario.getBiblioteca()) {
+
+            if(j.getId() == id) {
+                jogoEscolhido = j;
+                break;
+            }
+
+        }
+
+        if(jogoEscolhido == null) {
+            System.out.println("❌ Jogo não encontrado.");
+            return;
+        }
+
+        // -- Solicita a nota do jogo
+        System.out.print("Nota (1 a 5): ");
+        int nota = scanner.nextInt();
+        scanner.nextLine();
+
+        if(nota < 1 || nota > 5) {
+            System.out.println("❌ Nota inválida.");
+            return;
+        }
+
+        System.out.print("Comentário: ");
+        String comentario = scanner.nextLine();
+
+        Avaliacao avaliacao = new Avaliacao(usuario, jogoEscolhido, nota, comentario);
+
+        jogoEscolhido.adicionarAvaliacao(avaliacao);
+
+        System.out.println("\n✅ Avaliação registrada!");
+        System.out.println("⭐ Nota: " + avaliacao.getEstrelas());
+        System.out.println("💬 Comentário: " + comentario);
+    }
+
+
+    private void visualizarAvaliacoes() {
+
+        listarCatalogo();
+
+        System.out.print("\nDigite o ID do jogo: ");
+        int id = scanner.nextInt();
+        scanner.nextLine();
+
+        Jogos jogo = jogoController.buscarPorId(id);
+
+        if(jogo == null) {
+            System.out.println("❌ Jogo não encontrado.");
+            return;
+        }
+
+        System.out.println("\n============================");
+        System.out.println("🎮 " + jogo.getTitulo());
+        System.out.println("==============================");
+
+        if(jogo.getAvaliacoes().isEmpty()) {
+            System.out.println("Ainda não existem avaliações para este jogo.");
+            return;
+        }
+
+        for(Avaliacao avaliacao : jogo.getAvaliacoes()) {
+
+            System.out.println("\n👤 Usuário: " + avaliacao.getUsuario().getNome());
+
+            System.out.println("⭐ Avaliação: " + avaliacao.getEstrelas());
+
+            System.out.println("💬 Comentário: " + avaliacao.getComentario());
+
+            System.out.println("----------------------------");
+        }
+    }
+
+
+
 }
