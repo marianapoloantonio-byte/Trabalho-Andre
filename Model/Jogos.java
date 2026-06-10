@@ -1,6 +1,8 @@
 package Model;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Jogos  implements Serializable {
     private int id;
@@ -8,6 +10,8 @@ public class Jogos  implements Serializable {
     private String genero;
     private double preco;
 
+    // -- Cria um array list para avaliações
+    private List<Avaliacao> avaliacoes = new ArrayList<>();
 
     public Jogos(int id, String titulo, String genero, double preco) {
         this.id = id;
@@ -15,7 +19,18 @@ public class Jogos  implements Serializable {
         this.genero = genero;
         this.preco = preco;
     }
+
+    // -- Adiciona uma avaliacao na lista
+    public void adicionarAvaliacao(Avaliacao avaliacao) {
+        avaliacoes.add(avaliacao);
+    }
+
+
     //gets
+    public List<Avaliacao> getAvaliacoes() {
+        return avaliacoes;
+    }
+
     public int getId() {
         return id;
     }
