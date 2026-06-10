@@ -6,7 +6,7 @@ public class Administrador extends Pessoa{
     }
 
     @Override
-    public void exibirPerfil(){
-        System.out.println("Adiministrador"+ nome);
+    public void exibirPerfil() {
+        System.out.println("Administrador: " + getNome());
     }
 }
