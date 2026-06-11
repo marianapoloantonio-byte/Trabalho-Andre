@@ -20,24 +20,23 @@ public class UsuarioView {
         System.out.print("Digite sua senha: ");
         String senha = scanner.nextLine();
 
-        // Passa email e senha para o controller conferir
         Usuario usuarioLogado = usuarioController.login(email, senha);
 
         if (usuarioLogado != null) {
             abrirMenuLogado(usuarioLogado);
         } else {
-            System.out.println("\n❌ Email ou senha incorretos (ou usuário não existe)!");
+            System.out.println("\n❌ Email ou senha incorretos (ou utilizador não existe)!");
             System.out.println("Deseja criar uma conta nova?");
             System.out.println("1. Sim");
             System.out.println("2. Não");
             System.out.print("Opção: ");
             int op = scanner.nextInt();
-            scanner.nextLine(); // Limpa buffer
+            scanner.nextLine();
 
             if (op == 1) {
                 System.out.print("Digite o ID para sua conta: ");
                 int id = scanner.nextInt();
-                scanner.nextLine(); // Limpa buffer
+                scanner.nextLine(); // Limpa o buffer do teclado
                 System.out.print("Digite seu nome: ");
                 String nome = scanner.nextLine();
                 System.out.print("Digite seu email: ");
@@ -45,13 +44,11 @@ public class UsuarioView {
                 System.out.print("Digite uma senha para sua conta: ");
                 String novaSenha = scanner.nextLine();
 
-                // Realiza o cadastro salvando a senha
                 usuarioController.cadastrarUsuario(id, nome, novoEmail, novaSenha);
 
-                // Loga direto com a senha nova
                 Usuario novoUsuario = usuarioController.login(novoEmail, novaSenha);
                 if (novoUsuario != null) {
-                    System.out.println("\n✅ Conta criada e logada com sucesso!");
+                    System.out.println("\n🔓 Conta criada e logada com sucesso!");
                     abrirMenuLogado(novoUsuario);
                 }
             }
@@ -72,7 +69,7 @@ public class UsuarioView {
             System.out.println("0. Deslogar");
             System.out.print("Opção: ");
             opcao = scanner.nextInt();
-            scanner.nextLine(); // Limpa buffer
+            scanner.nextLine();
 
             switch (opcao) {
                 case 1 -> jogosView.exibirCatalogo(jogoController.listarJogos());

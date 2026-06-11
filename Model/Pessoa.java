@@ -3,6 +3,7 @@ package Model;
 import java.io.Serializable;
 
 public abstract class Pessoa implements Serializable {
+
     protected int id;
     protected String nome;
     protected String email;
