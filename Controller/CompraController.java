@@ -28,7 +28,6 @@ public class CompraController {
 
         Pagamento pagamento;
 
-        // -- Seleciona de acordo com a opção de pagamento
         switch(opcaoPagamento){
             case 1:
                 pagamento = new PagamentoCartao();

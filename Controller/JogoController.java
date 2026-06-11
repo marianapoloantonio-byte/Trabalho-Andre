@@ -10,7 +10,6 @@ public class JogoController {
     private static List<Jogos> bancoDeJogos = new ArrayList<>();
 
     public JogoController() {
-        //** Alguns jogos iniciais para teste
         if (bancoDeJogos.isEmpty()) {
 
             bancoDeJogos.add(new Jogos(1, "Resident Evil 4", "Terror", 169.00));
