@@ -28,28 +28,64 @@ O projeto foi estruturado utilizando o padrão arquitetural **MVC (Model-View-Co
 * **Interfaces:** * `Autenticavel`: Padroniza o comportamento de login seguro.
   * `Pagamento`: Desacopla as regras financeiras, permitindo que as classes de pagamento processem transações de forma independente.
 
-### Persistência de Dados (O Critério da "Queda de Energia"):
-Para cumprir a exigência de que os dados não fossem perdidos ao encerrar o programa, implementamos a classe `ArquivoService`. Esta classe utiliza **Serialização de Objetos em Java** para gravar e ler coleções em arquivos binários físicos (`jogos.dat` e `usuarios.dat`). 
-* *Como funciona:* Sempre que o sistema inicia, ele lê os arquivos binários. Sempre que um registro é criado, alterado ou removido, o arquivo correspondente é atualizado instantaneamente em disco.
+### Relações entre as Classes (Associação, Agregação e Composição)
 
-### Sistema de Auditoria (Logs):
-Através da classe `LogService`, o sistema monitora operações críticas (como cadastros, alterações e exclusões) e escreve um histórico detalhado em tempo real em um arquivo físico de texto puro (`log.txt`).
+Para mapear o domínio de forma realista e profissional, estruturamos a comunicação do software utilizando diferentes níveis de acoplamento entre as entidades do pacote `Model`:
+
+#### 1. Associação Simples (Conexão e Dependência de Uso)
+Acontece quando duas classes são independentes em seus ciclos de vida, mas interagem para realizar uma ação.
+* **`Compra` ➡️ `Pagamento`:** A classe `Compra` conhece e invoca o método da interface `Pagamento`. Graças ao polimorfismo, a compra delega o processamento financeiro sem precisar se acoplar a uma regra específica, seja ela `PagamentoPix`, `PagamentoCartao` ou `PagamentoBoleto`.
+* **`Avaliacao` ➡️ `Usuario` e `Jogos`:** A entidade `Avaliacao` funciona como uma linha de ligação no banco de dados, guardando a referência de qual cliente escreveu o comentário e para qual jogo aquela nota se destina.
+
+#### 2. Agregação (Relação "Tem um" - Parte/Todo Independente)
+Ocorre quando uma classe contém uma coleção de objetos de outra classe, mas a destruição da classe principal não afeta a existência dos objetos contidos.
+* **`Usuario` ➡️ `Jogos` (Através do `List<Jogos> biblioteca`):** O usuário possui uma biblioteca com jogos adquiridos. Caso o cliente utilize a função de excluir sua própria conta do sistema, os objetos do tipo `Jogos` continuam existindo perfeitamente no catálogo global da loja. Eles não são apagados do sistema apenas porque um usuário deixou de existir.
+
+#### 3. Composição (Relação "Dono de" - Vínculo de Sobrevivência)
+É a forma mais forte de relacionamento, onde os objetos filhos pertencem exclusivamente ao objeto pai e têm seu ciclo de vida rigidamente atrelado a ele.
+* **`Jogos` ➡️ `Avaliacao` (Através do `List<Avaliacao> avaliacoes`):** As avaliações pertencem de forma exclusiva e intrínseca a um jogo. Se o Administrador apagar um jogo do catálogo, todas as avaliações, notas e comentários atrelados a ele deixam de fazer sentido e são excluídas da memória e do disco junto com o jogo. Não existem avaliações órfãs no sistema.
+
+### Persistência de Dados e Auditoria:
+* **Persistência física:** Implementada na classe `ArquivoService` (`Service`), utilizando a **Serialização de Objetos em Java** para gravar e ler as coleções em arquivos binários (`jogos.dat` e `usuarios.dat`). Qualquer alteração (CRUD) é refletida instantaneamente no disco, sobrevivendo ao encerramento da aplicação.
+* **Sistema de Logs:** Através da classe `LogService`, ações críticas do sistema geram um histórico detalhado em tempo real salvo no arquivo de texto puro `log.txt`.
 
 ---
 
 ## 3. Uso de Inteligência Artificial (Processo de Co-Criação)
 
-Conforme solicitado nas orientações do projeto, documentamos aqui a nossa experiência utilizando ferramentas de Inteligência Artificial (Generative AI) durante o ciclo de desenvolvimento:
+Durante o desenvolvimento do projeto, utilizamos ferramentas de Inteligência Artificial como apoio em diferentes etapas do trabalho. Inicialmente, a IA foi utilizada para auxiliar na definição do tema do projeto e no planejamento das funcionalidades que seriam implementadas, ajudando a organizar as ideias da equipe e estruturar melhor o escopo do sistema.
 
-1. **Refatoração de Código e Padrões:** Utilizamos a IA como um revisor de código parceiro (*Pair Programmer*) para nos ajudar a converter os repositórios que antes operavam puramente em memória RAM estática para um modelo robusto baseado em persistência binária física via arquivos `.dat`.
-2. **Fechamento de CRUDs:** A IA auxiliou na identificação de lacunas nas operações de dados (como os métodos de Update e Delete que faltavam nos fluxos de tela das Views), gerando estruturas limpas de manipulação e limpeza de buffers do `Scanner`.
-3. **Análise de Critérios:** Usamos a ferramenta para validar se a nossa arquitetura estava cobrindo todos os tópicos da folha de avaliação do Professor André antes da submissão final, garantindo que nenhum pilar técnico ficasse de fora.
+Ao longo do desenvolvimento, a ferramenta também foi utilizada para esclarecer dúvidas relacionadas à linguagem Java, conceitos de Programação Orientada a Objetos, persistência de dados e organização da arquitetura do projeto. Além disso, serviu como fonte de inspiração para soluções de implementação, sugestões de melhorias e boas práticas de programação.
 
-*Nota de Transparência:* A IA atuou como uma aceleradora de produtividade e mentora sintática, mas toda a lógica de negócio, arquitetura estrutural de pacotes e regras do domínio de e-commerce foram desenhadas, validadas e testadas pela equipe.
+A IA foi utilizada como uma ferramenta de apoio ao aprendizado e à produtividade, contribuindo para a pesquisa e para a tomada de decisões técnicas. Entretanto, todas as escolhas de desenvolvimento, implementação da lógica de negócio, testes e validações foram realizadas pela equipe.
+
+---
 
 ## 4. Como Executar o Projeto
 
-1. Certifique-se de que tem o **JDK 17** (ou superior) instalado e configurado na sua máquina.
-2. Clone este repositório:
-   ```bash
-   git clone [https://github.com/marianapoloantonio-byte/Trabalho-Andre.git](https://github.com/marianapoloantonio-byte/Trabalho-Andre.git)
+1. Clone o repositório:
+```bash
+git clone [https://github.com/marianapoloantonio-byte/Trabalho-Andre.git](https://github.com/marianapoloantonio-byte/Trabalho-Andre.git)
+
+2. Entre na pasta do projeto:
+
+```bash
+cd Trabalho-Andre
+```
+
+3. Compile os arquivos Java:
+
+```bash
+javac src/**/*.java
+```
+
+4. Execute a classe principal:
+
+```bash
+java Main
+```
+
+5. O sistema criará automaticamente os arquivos:
+- jogos.dat
+- usuarios.dat
+- log.txt
