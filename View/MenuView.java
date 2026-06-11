@@ -1,9 +1,7 @@
 package View;
 
-import Controller.CompraController;
 import Controller.JogoController;
 import Controller.UsuarioController;
-import Model.Avaliacao;
 import Model.Jogos;
 import Model.Usuario;
 import java.util.Scanner;
@@ -14,9 +12,11 @@ public class MenuView {
     private Scanner scanner = new Scanner(System.in);
     private UsuarioController usuarioController = new UsuarioController();
     private JogoController jogoController = new JogoController();
-    private CompraController compraController = new CompraController();
     private AdministradorView administradorView = new AdministradorView();
     private JogosView jogosView = new JogosView();
+    private AvaliacaoView avaliacaoView = new AvaliacaoView();
+    private CompraView compraView = new CompraView();
+
 
     public void exibirMenuPrincipal() {
         int opcao = -1;
@@ -76,10 +76,10 @@ public class MenuView {
 
             switch (opcao) {
                 case 1 -> listarCatalogo();
-                case 2 -> comprarJogo(usuarioLogado);
+                case 2 -> compraView.comprarJogo(usuarioLogado);
                 case 3 -> visualizarBiblioteca(usuarioLogado);
-                case 4 -> avaliarJogo(usuarioLogado);
-                case 5 -> visualizarAvaliacoes();
+                case 4 -> avaliacaoView.avaliarJogo(usuarioLogado);
+                case 5 -> avaliacaoView.visualizarAvaliacoes();
                 case 0 -> System.out.println("Deslogando usuário...");
                 default -> System.out.println("Opção inválida!");
             }
@@ -93,27 +93,6 @@ public class MenuView {
         jogosView.exibirCatalogo(jogoController.listarJogos());
     }
 
-    private void comprarJogo(Usuario usuario) {
-        listarCatalogo();
-        System.out.print("\nDigite o ID do jogo que deseja comprar: ");
-        int idJogo = scanner.nextInt();
-        Jogos jogoEscolhido = jogoController.buscarPorId(idJogo);
-
-        if (jogoEscolhido == null) {
-            System.out.println("Jogo não encontrado!");
-            return;
-        }
-
-        System.out.println("\nFormas de Pagamento:");
-        System.out.println("1. Cartão de Crédito");
-        System.out.println("2. Pix");
-        System.out.println("3. Boleto");
-        System.out.print("Escolha a opção de pagamento: ");
-        int formaPagamento = scanner.nextInt();
-
-        compraController.processarCompra(usuario, jogoEscolhido, formaPagamento);
-    }
-
     private void visualizarBiblioteca(Usuario usuario) {
         System.out.println("\n ----------- MINHA BIBLIOTECA -----------");
         if (usuario.getBiblioteca().isEmpty()) {
@@ -124,103 +103,5 @@ public class MenuView {
             }
         }
     }
-
-    // --
-
-    // ============= METODOS PARA AVALIACOES ===================
-    private void avaliarJogo(Usuario usuario) {
-
-        // -- Exibe mensagem se nao tiver jogo na biblioteca para avaliar
-        if(usuario.getBiblioteca().isEmpty()) {
-            System.out.println("❌ Você não possui jogos para avaliar.");
-            return;
-        }
-
-        System.out.println("\n🎮 SEUS JOGOS:");
-
-        for(Jogos j : usuario.getBiblioteca()) {
-            System.out.println("ID: " + j.getId() + " | " + j.getTitulo());
-        }
-
-        System.out.print("\nDigite o ID do jogo: ");
-        int id = scanner.nextInt();
-        scanner.nextLine();
-
-        Jogos jogoEscolhido = null;
-
-        for(Jogos j : usuario.getBiblioteca()) {
-
-            if(j.getId() == id) {
-                jogoEscolhido = j;
-                break;
-            }
-
-        }
-
-        if(jogoEscolhido == null) {
-            System.out.println("❌ Jogo não encontrado.");
-            return;
-        }
-
-        // -- Solicita a nota do jogo
-        System.out.print("Nota (1 a 5): ");
-        int nota = scanner.nextInt();
-        scanner.nextLine();
-
-        if(nota < 1 || nota > 5) {
-            System.out.println("❌ Nota inválida.");
-            return;
-        }
-
-        System.out.print("Comentário: ");
-        String comentario = scanner.nextLine();
-
-        Avaliacao avaliacao = new Avaliacao(usuario, jogoEscolhido, nota, comentario);
-
-        jogoEscolhido.adicionarAvaliacao(avaliacao);
-
-        System.out.println("\n✅ Avaliação registrada!");
-        System.out.println("⭐ Nota: " + avaliacao.getEstrelas());
-        System.out.println("💬 Comentário: " + comentario);
-    }
-
-
-    private void visualizarAvaliacoes() {
-
-        listarCatalogo();
-
-        System.out.print("\nDigite o ID do jogo: ");
-        int id = scanner.nextInt();
-        scanner.nextLine();
-
-        Jogos jogo = jogoController.buscarPorId(id);
-
-        if(jogo == null) {
-            System.out.println("❌ Jogo não encontrado.");
-            return;
-        }
-
-        System.out.println("\n============================");
-        System.out.println("🎮 " + jogo.getTitulo());
-        System.out.println("==============================");
-
-        if(jogo.getAvaliacoes().isEmpty()) {
-            System.out.println("Ainda não existem avaliações para este jogo.");
-            return;
-        }
-
-        for(Avaliacao avaliacao : jogo.getAvaliacoes()) {
-
-            System.out.println("\n👤 Usuário: " + avaliacao.getUsuario().getNome());
-
-            System.out.println("⭐ Avaliação: " + avaliacao.getEstrelas());
-
-            System.out.println("💬 Comentário: " + avaliacao.getComentario());
-
-            System.out.println("----------------------------");
-        }
-    }
-
-
-
+    
 }
