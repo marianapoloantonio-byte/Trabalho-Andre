@@ -18,7 +18,6 @@ public class AvaliacaoView {
 
     public void avaliarJogo(Usuario usuario) {
 
-        // -- Exibe mensagem se nao tiver jogo na biblioteca para avaliar
         if(usuario.getBiblioteca().isEmpty()) {
             System.out.println("❌ Você não possui jogos para avaliar.");
             return;
@@ -50,7 +49,6 @@ public class AvaliacaoView {
             return;
         }
 
-        // -- Solicita a nota do jogo
         System.out.print("Nota (1 a 5): ");
         int nota = scanner.nextInt();
         scanner.nextLine();
@@ -63,14 +61,12 @@ public class AvaliacaoView {
         System.out.print("Comentário: ");
         String comentario = scanner.nextLine();
 
-        // ============= ATENCAO ==============
 
         avaliacaoController.avaliarJogo(usuario, jogoEscolhido, nota, comentario);
 
 
         System.out.println("\n✅ Avaliação registrada!");
 
-        //Adiciona a quantidade de estrelas da avaliacao
         String estrelas = "";
         for(int i = 0; i < nota; i++) {
             estrelas += "⭐";

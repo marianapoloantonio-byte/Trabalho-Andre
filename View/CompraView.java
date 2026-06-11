@@ -15,7 +15,6 @@ public class CompraView {
     private JogoController jogoController = new JogoController();
     private JogosView jogosView = new JogosView();
 
-    // -- Lista todos os jogos do catalogo
     private void listarCatalogo() {
         jogosView.exibirCatalogo(jogoController.listarJogos());
     }

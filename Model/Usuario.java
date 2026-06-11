@@ -39,7 +39,6 @@ public class Usuario extends Pessoa implements Autenticavel {
         this.biblioteca = biblioteca;
     }
 
-    // Valida se o email E a senha estão corretos
     @Override
     public boolean login(String email, String senha) {
         return this.email.equalsIgnoreCase(email) && this.senha.equals(senha);

@@ -19,6 +19,7 @@ public class AdministradorView {
             System.out.println("1. Cadastrar Novo Jogo");
             System.out.println("2. Listar Todos os Jogos");
             System.out.println("3. Remover Jogo");
+            System.out.println("4. Atualizar Dados de um Jogo"); // <-- NOVO NO MENU
             System.out.println("0. Voltar");
             System.out.print("Opção: ");
 
@@ -29,6 +30,7 @@ public class AdministradorView {
                 case 1 -> cadastrarJogo();
                 case 2 -> listarJogos();
                 case 3 -> removerJogo();
+                case 4 -> atualizarJogo();
                 case 0 -> System.out.println("Saindo do modo administrador...");
                 default -> System.out.println("Opção inválida!");
             }
@@ -39,8 +41,7 @@ public class AdministradorView {
 
         System.out.print("ID: ");
         int id = scanner.nextInt();
-        scanner.nextLine(); // Limpa o buffer após ler o ID numérico
-
+        scanner.nextLine();
         System.out.print("Título: ");
         String titulo = scanner.nextLine();
 
@@ -53,8 +54,6 @@ public class AdministradorView {
         double preco = Double.parseDouble(precoInput.trim().replace(",", "."));
 
         administradorController.cadastrarJogo(id, titulo, genero, preco);
-
-        System.out.println("✅ Jogo cadastrado com sucesso!");
     }
 
     private void listarJogos() {
@@ -83,7 +82,29 @@ public class AdministradorView {
         scanner.nextLine();
 
         administradorController.removerJogo(id);
+    }
 
-        System.out.println("✅ Operação concluída.");
+    private void atualizarJogo() {
+        System.out.print("Digite o ID do jogo que deseja atualizar: ");
+        int id = scanner.nextInt();
+        scanner.nextLine();
+
+        System.out.print("Novo Título: ");
+        String novoTitulo = scanner.nextLine();
+
+        System.out.print("Novo Gênero: ");
+        String novoGenero = scanner.nextLine();
+
+        System.out.print("Novo Preço: ");
+        String precoInput = scanner.nextLine();
+        double novoPreco = Double.parseDouble(precoInput.trim().replace(",", "."));
+
+        boolean sucesso = administradorController.atualizarJogo(id, novoTitulo, novoGenero, novoPreco);
+
+        if (sucesso) {
+            System.out.println("✅ Jogo atualizado com sucesso!");
+        } else {
+            System.out.println("❌ Jogo não encontrado com o ID fornecido.");
+        }
     }
 }

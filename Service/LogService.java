@@ -3,7 +3,6 @@ package Service;
 import java.io.FileWriter;
 import java.io.IOException;
 
-// -- Serve para registrar em um arquivo de texto
 public class LogService {
 
     public static void registrar(String mensagem) {

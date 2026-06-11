@@ -26,4 +26,8 @@ public class AdministradorController {
     public Jogos buscarJogo(int id) {
         return jogoController.buscarPorId(id);
     }
+
+    public boolean atualizarJogo(int id, String novoTitulo, String novoGenero, double novoPreco) {
+        return jogoController.atualizarJogo(id, novoTitulo, novoGenero, novoPreco);
+    }
 }
